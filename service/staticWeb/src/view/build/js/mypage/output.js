@@ -12,13 +12,6 @@ export const showUserProfile = ({ userInfoResult, applyElmList }) => {
 
 
 /* request */
-export const getAddTimer = ({ apiEndpoint, postRequest }) => {
-  const url = `${apiEndpoint}/timer/add`
-  return () => {
-    return postRequest(url)
-  }
-}
-
 export const getSaveMessage = ({ apiEndpoint, postRequest }) => {
   const url = `${apiEndpoint}/message/save`
   return () => {
@@ -58,14 +51,6 @@ export const getUploadFile = ({ apiEndpoint, postFormRequest }) => {
 
 
 /* onClick */
-export const setOnClickAddTimerButton = ({ onClickAddTimerButton }) => {
-  const addTimerBtn = document.querySelector('#addTimerBtn')
-  addTimerBtn.onclick = (e) => {
-    e.preventDefault()
-    onClickAddTimerButton()
-  }
-}
-
 export const setOnClickSaveMessageButton = ({ onClickSaveMessageButton }) => {
   const saveMessageBtn = document.querySelector('#saveMessageBtn')
   saveMessageBtn.onclick = (e) => {
@@ -154,14 +139,4 @@ export const showUploadForm = ({ splitPermissionListResult }) => {
   }
 }
 
-
-export const addTabMenuContainer = ({
-  createTabMenuContainer, showTabButton, tabList, activeTabContainerId,
-}) => {
-  const tabMenuContainerElm = createTabMenuContainer()
-  const tabMenuContainerWrapElm = document.querySelector('#tabMenuContainerWrap')
-  tabMenuContainerWrapElm.appendChild(tabMenuContainerElm)
-
-  showTabButton({ tabMenuContainerElm, tabList, activeTabContainerId })
-}
 
