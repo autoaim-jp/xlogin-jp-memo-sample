@@ -18,12 +18,6 @@ asocial.lib = lib
 /* a is an alias of asocial */
 const a = asocial
 
-const showNotification = () => {
-  setInterval(() => {
-    a.lib.common.output.showNotification(a.setting.browserServerSetting.getValue('apiEndpoint'), a.lib.xdevkit.output.showModal, a.lib.common.input.getRequest)
-  }, 30 * 1000)
-}
-
 const loadMessageContent = async () => {
   const messageResult = await a.input.fetchMessage(argNamed({
     browserServerSetting: a.setting.browserServerSetting.getList('apiEndpoint'),
@@ -60,7 +54,6 @@ const main = async () => {
 
 //  a.app.loadMessageContent()
 
-  a.app.showNotification()
   a.app.loadPermission()
 
   setTimeout(() => {
@@ -70,7 +63,6 @@ const main = async () => {
 
 a.app = {
   main,
-  showNotification,
   loadMessageContent,
   loadPermission,
 }

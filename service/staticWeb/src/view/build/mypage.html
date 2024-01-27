@@ -280,6 +280,52 @@
 
 
     
+    <div id='modalBackground' data-id='modalClose' class='fixed bg-white bg-opacity-50 w-full h-full z-40 inset-0'></div>
+<div id='modalTemplate' data-id='modal' class='transition-opacity duration-500 fixed w-11/12 lg:w-5/12 h-full left-0 right-0 m-auto flex font-extrabold z-50'>
+  <section class='relative m-auto w-4/5 shadow-lg rounded-3xl shadow-2xl bg-white'>
+    <div class='p-8 text-left sm:p-12 flex flex-col'
+         x-data="{
+         title: '',
+         content: '',
+         saveContent(event) {
+           setTimeout(() => {
+             console.log(this.title, this.content);
+           }, 750)
+         }
+         }"
+         >
+         <label
+           for='modalTitleInput'
+           class='relative block rounded-md border border-gray-200 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600'
+           >
+           <input
+             type='text'
+             id='modalTitleInput'
+             class='peer border-none bg-transparent placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0 p-4'
+             placeholder='title'
+             x-model='title'
+             x-on:keyup.debounce.750ms='saveContent($event)'
+             />
+
+           <span
+             class='pointer-events-none absolute start-2.5 top-0 -translate-y-1/2 bg-white p-0.5 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs'
+             >
+             title
+           </span>
+         </label>
+           <textarea
+             class='w-full rounded-lg border border-gray-200 p-3 text-sm'
+             placeholder='content'
+             rows='8'
+             id='modalContentInput'
+             x-on:keyup.debounce.750ms='saveContent($event)'
+             x-model='content'
+             ></textarea>
+    </div>
+  </section>
+</div>
+
+
     <div class='section1 min-h-80 flex flex-row text-left text-black md:flex items-center justify-center flex-grow p-16'>
       <div class='font-bold text-3xl max-w-lg bg-gray-100 p-6 rounded shadow-xl max-w-4xl w-full flex flex-col justify-center'>
         <div id='tabMenuContainerWrap'class='text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700 mb-4'>
