@@ -46,6 +46,30 @@ const loadPermission = async () => {
   a.lib.xdevkit.output.reloadXloginLoginBtn(splitPermissionListResult?.result?.clientId)
 }
 
+const setupAlpine = () => {
+  Alpine.store('memoModal', {
+    isKeep: false,
+    saveMemo(title, content) {
+      console.log(title, content)
+    },
+    closeModal(event) {
+      console.log('closeModal start')
+      this.isKeep = false
+      setTimeout(function () {
+        if (this.isKeep) {
+          console.log('do nothing')
+        } else {
+          console.log('modal closed')
+        }
+      }.bind(this), 100)
+    },
+    keepModal(event) {
+      console.log('keep')
+      this.isKeep = true
+    }
+    })
+}
+
 const main = async () => {
   a.lib.xdevkit.output.switchLoading(true)
   // TODO alpinejs
@@ -56,6 +80,8 @@ const main = async () => {
 
   a.app.loadPermission()
 
+  a.app.setupAlpine()
+
   setTimeout(() => {
     a.lib.xdevkit.output.switchLoading(false)
   }, 300)
@@ -65,6 +91,7 @@ a.app = {
   main,
   loadMessageContent,
   loadPermission,
+  setupAlpine,
 }
 
 a.app.main()

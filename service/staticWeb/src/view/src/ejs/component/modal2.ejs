@@ -5,9 +5,9 @@
          x-data="{
          title: '',
          content: '',
-         saveContent(event) {
+         saveMemo(event) {
            setTimeout(() => {
-             console.log(this.title, this.content);
+             $store.memoModal.saveMemo(this.title, this.content);
            }, 750)
          }
          }"
@@ -22,7 +22,9 @@
              class='peer border-none bg-transparent placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0 p-4'
              placeholder='title'
              x-model='title'
-             x-on:keyup.debounce.750ms='saveContent($event)'
+             x-on:keyup.debounce.750ms='saveMemo($event)'
+             x-on:focus="$store.memoModal.keepModal($event)"
+             x-on:blur="$store.memoModal.closeModal($event)"
              />
 
            <span
@@ -36,10 +38,11 @@
              placeholder='content'
              rows='8'
              id='modalContentInput'
-             x-on:keyup.debounce.750ms='saveContent($event)'
              x-model='content'
+             x-on:keyup.debounce.750ms='saveMemo($event)'
+             x-on:focus="$store.memoModal.keepModal($event)"
+             x-on:blur="$store.memoModal.closeModal($event)"
              ></textarea>
     </div>
   </section>
 </div>
-
