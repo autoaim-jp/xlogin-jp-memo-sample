@@ -1,6 +1,7 @@
 <%- include(`${xdevkitComponentPath}head.ejs`, { title, description, author, })  %>
   <%- include(`${xdevkitComponentPath}includeCss.ejs`, { inlineCssList, externalCssList, isProduction, })  %>
   <body class='flex flex-col' x-data>
+    <div x-init="setupAlpine()"></div>
     <%- include(`${componentPath}nav2.ejs`)  %>
     <%- include(`${xdevkitComponentPath}notification.ejs`)  %>
     <%- include(`${xdevkitComponentPath}breadcrumb.ejs`, { breadcrumbList })  %>

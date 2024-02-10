@@ -47,27 +47,41 @@ const loadPermission = async () => {
 }
 
 const setupAlpine = () => {
-  Alpine.store('memoModal', {
-    isKeep: false,
-    saveMemo(title, content) {
-      console.log(title, content)
-    },
-    closeModal(event) {
-      console.log('closeModal start')
-      this.isKeep = false
-      setTimeout(function () {
-        if (this.isKeep) {
-          console.log('do nothing')
-        } else {
-          console.log('modal closed')
-        }
-      }.bind(this), 100)
-    },
-    keepModal(event) {
-      console.log('keep')
-      this.isKeep = true
+  let isModalActive = true
+  Alpine.data('modalData', () => {
+    return {
+      isKeep: false,
+      title: '',
+      content: '',
+      saveMemo(event) {
+        setTimeout(() => {
+          console.log(this.title, this.content)
+        }, 750)
+      },
+      closeModal(event) {
+        console.log('closeModal start')
+        this.isKeep = false
+        setTimeout(function () {
+          if (this.isKeep) {
+            console.log('do nothing')
+          } else {
+            console.log('modal closed')
+            isModalActive = false
+          }
+        }.bind(this), 100)
+      },
+      keepModal(event) {
+        console.log('keep')
+        this.isKeep = true
+      },
+      isModalActive: false,
+      updateModalState() {
+        setInterval(() => {
+          this.isModalActive = isModalActive
+        }, 1 * 100)
+      }
     }
-    })
+  })
 }
 
 const main = async () => {
@@ -76,11 +90,12 @@ const main = async () => {
   // a.lib.common.output.setOnClickNavManu()
   a.lib.monkeyPatch()
 
-//  a.app.loadMessageContent()
+  //  a.app.loadMessageContent()
 
   a.app.loadPermission()
 
-  a.app.setupAlpine()
+  // a.app.setupAlpine()
+  window.setupAlpine = a.app.setupAlpine
 
   setTimeout(() => {
     a.lib.xdevkit.output.switchLoading(false)
@@ -95,4 +110,5 @@ a.app = {
 }
 
 a.app.main()
+
 

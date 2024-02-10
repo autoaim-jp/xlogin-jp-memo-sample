@@ -39,7 +39,8 @@ const ejsConfig = {
     inlineCssList: [],
     externalCssList: ['/css/tailwind.css'],
     inlineScriptList: [],
-    externalScriptList: ['https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js', '/js/mypage/app.js'],
+    // externalScriptList: ['https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js', '/js/mypage/app.js'],
+    externalScriptList: ['/js/mypage/app.js', 'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js'],
   },
   error: {
     title: 'error | sample.xlogin.jp',

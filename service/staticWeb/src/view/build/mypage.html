@@ -29,6 +29,7 @@
 
 
   <body class='flex flex-col' x-data>
+    <div x-init="setupAlpine()"></div>
     <header class="bg-white">
   <div class="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
     <div class="flex h-16 items-center justify-between pr-12">
@@ -280,20 +281,13 @@
 
 
     
-    <div id='modalBackground' data-id='modalClose' class='fixed bg-white bg-opacity-50 w-full h-full z-40 inset-0'></div>
-<div id='modalTemplate' data-id='modal' class='transition-opacity duration-500 fixed w-11/12 lg:w-5/12 h-full left-0 right-0 m-auto flex font-extrabold z-50'>
+    <div x-data="modalData()" 
+     x-init="updateModalState()"
+     class='absolute'>
+<div x-show="isModalActive" id='modalBackground' data-id='modalClose' class='fixed bg-white bg-opacity-50 w-full h-full z-40 inset-0'></div>
+<div x-show="isModalActive" id='modalTemplate' data-id='modal' class='transition-opacity duration-500 fixed w-11/12 lg:w-5/12 h-full left-0 right-0 m-auto flex font-extrabold z-50'>
   <section class='relative m-auto w-4/5 shadow-lg rounded-3xl shadow-2xl bg-white'>
-    <div class='p-8 text-left sm:p-12 flex flex-col'
-         x-data="{
-         title: '',
-         content: '',
-         saveMemo(event) {
-           setTimeout(() => {
-             $store.memoModal.saveMemo(this.title, this.content);
-           }, 750)
-         }
-         }"
-         >
+    <div class='p-8 text-left sm:p-12 flex flex-col'>
          <label
            for='modalTitleInput'
            class='relative block rounded-md border border-gray-200 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600'
@@ -305,8 +299,8 @@
              placeholder='title'
              x-model='title'
              x-on:keyup.debounce.750ms='saveMemo($event)'
-             x-on:focus="$store.memoModal.keepModal($event)"
-             x-on:blur="$store.memoModal.closeModal($event)"
+             x-on:focus="keepModal($event)"
+             x-on:blur="closeModal($event)"
              />
 
            <span
@@ -322,11 +316,12 @@
              id='modalContentInput'
              x-model='content'
              x-on:keyup.debounce.750ms='saveMemo($event)'
-             x-on:focus="$store.memoModal.keepModal($event)"
-             x-on:blur="$store.memoModal.closeModal($event)"
+             x-on:focus="keepModal($event)"
+             x-on:blur="closeModal($event)"
              ></textarea>
     </div>
   </section>
+</div>
 </div>
 
     <div class='section1 min-h-80 flex flex-row text-left text-black md:flex items-center justify-center flex-grow p-16'>
@@ -434,10 +429,10 @@
   </body>
       
       
-      <script type='module' src='https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js'></script> 
+      <script type='module' src='/js/mypage/app.js'></script> 
     
       
-      <script type='module' src='/js/mypage/app.js'></script> 
+      <script type='module' src='https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js'></script> 
     
 
     
