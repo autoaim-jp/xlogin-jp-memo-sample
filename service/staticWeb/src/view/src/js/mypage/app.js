@@ -31,6 +31,7 @@ const loadMessageContent = async () => {
 
 const loadPermission = async () => {
   const splitPermissionListResult = await a.lib.common.input.fetchSplitPermissionList(a.setting.browserServerSetting.getValue('apiEndpoint'))
+  /*
   a.output.showEditor(argNamed({
     param: { splitPermissionListResult },
   }))
@@ -42,44 +43,38 @@ const loadPermission = async () => {
   a.output.showUploadForm(argNamed({
     param: { splitPermissionListResult },
   }))
+  */
 
   a.lib.xdevkit.output.reloadXloginLoginBtn(splitPermissionListResult?.result?.clientId)
 }
 
 const setupAlpine = () => {
-  let isModalActive = true
-  Alpine.data('modalData', () => {
+  Alpine.store('memo', {
+    selectedIdx: -1,
+    memoList: [],
+    
+    saveMemoList() {
+      console.log(Alpine.store('modal').title, Alpine.store('modal').content)
+      const { title, content } = Alpine.store('modal')
+      Alpine.store('memo').memoList[Alpine.store('memo').selectedIdx].title = title
+      Alpine.store('memo').memoList[Alpine.store('memo').selectedIdx].content = content
+    },
+  })
+
+  Alpine.data('cardListData', () => {
     return {
-      isKeep: false,
-      title: '',
-      content: '',
-      saveMemo(event) {
-        setTimeout(() => {
-          console.log(this.title, this.content)
-        }, 750)
+      loadMemoList() {
+        Alpine.store('memo').memoList = [
+          { title: 'その1', content: 'めもめも\nめも！' },
+          { title: 'その2', content: 'これはメモです。' },
+        ]
       },
-      closeModal(event) {
-        console.log('closeModal start')
-        this.isKeep = false
-        setTimeout(function () {
-          if (this.isKeep) {
-            console.log('do nothing')
-          } else {
-            console.log('modal closed')
-            isModalActive = false
-          }
-        }.bind(this), 100)
+      showModal(memoIdx) {
+        Alpine.store('memo').selectedIdx = memoIdx
+        const { title, content } = Alpine.store('memo').memoList[memoIdx]
+
+        Alpine.store('modal').customShowModal(title, content)
       },
-      keepModal(event) {
-        console.log('keep')
-        this.isKeep = true
-      },
-      isModalActive: false,
-      updateModalState() {
-        setInterval(() => {
-          this.isModalActive = isModalActive
-        }, 1 * 100)
-      }
     }
   })
 }
