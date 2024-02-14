@@ -18,17 +18,6 @@ asocial.lib = lib
 /* a is an alias of asocial */
 const a = asocial
 
-const loadMessageContent = async () => {
-  const messageResult = await a.input.fetchMessage(argNamed({
-    browserServerSetting: a.setting.browserServerSetting.getList('apiEndpoint'),
-    lib: [a.lib.common.input.getRequest],
-  }))
-
-  a.output.showMessage(argNamed({
-    param: { messageResult },
-  }))
-}
-
 const loadPermission = async () => {
   const splitPermissionListResult = await a.lib.common.input.fetchSplitPermissionList(a.setting.browserServerSetting.getValue('apiEndpoint'))
   /*
@@ -49,25 +38,44 @@ const loadPermission = async () => {
 }
 
 const setupAlpine = () => {
+  const saveMessage = a.output.getSaveMessage(argNamed({
+    browserServerSetting: a.setting.browserServerSetting.getList('apiEndpoint'),
+    lib: [a.lib.common.output.postRequest],
+  }))
+
   Alpine.store('memo', {
     selectedIdx: -1,
     memoList: [],
-    
+
     saveMemoList() {
-      console.log(Alpine.store('modal').title, Alpine.store('modal').content)
       const { title, content } = Alpine.store('modal')
       Alpine.store('memo').memoList[Alpine.store('memo').selectedIdx].title = title
       Alpine.store('memo').memoList[Alpine.store('memo').selectedIdx].content = content
+
+      const message = JSON.stringify(Alpine.store('memo').memoList)
+      saveMessage({ message })
+      console.log('memoList updated')
     },
   })
 
   Alpine.data('cardListData', () => {
     return {
-      loadMemoList() {
+      async loadMemoList() {
+        /*
         Alpine.store('memo').memoList = [
           { title: 'その1', content: 'めもめも\nめも！' },
           { title: 'その2', content: 'これはメモです。' },
         ]
+        */
+
+        const messageResult = await a.input.fetchMessage(argNamed({
+          browserServerSetting: a.setting.browserServerSetting.getList('apiEndpoint'),
+          lib: [a.lib.common.input.getRequest],
+        }))
+
+        console.log({ messageResult })
+        const memoList = JSON.parse(messageResult?.result?.jsonContent || '[]')
+        Alpine.store('memo').memoList = memoList
       },
       showModal(memoIdx) {
         Alpine.store('memo').selectedIdx = memoIdx
@@ -85,7 +93,7 @@ const main = async () => {
   // a.lib.common.output.setOnClickNavManu()
   a.lib.monkeyPatch()
 
-  //  a.app.loadMessageContent()
+  // a.app.loadMessageContent()
 
   a.app.loadPermission()
 
@@ -99,7 +107,6 @@ const main = async () => {
 
 a.app = {
   main,
-  loadMessageContent,
   loadPermission,
   setupAlpine,
 }
