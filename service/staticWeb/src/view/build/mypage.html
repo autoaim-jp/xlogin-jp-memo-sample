@@ -29,6 +29,7 @@
 
 
   <body class='flex flex-col' x-data>
+    <div x-init="setupAlpine()"></div>
     <header class="bg-white">
   <div class="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
     <div class="flex h-16 items-center justify-between pr-12">
@@ -279,77 +280,127 @@
 
 
 
+    <div x-data="cardListData()"
+     x-init="loadMemoList()"
+     >
+     <template x-for="(memoObj, index) in $store.memo.memoList">
+       <div class='border'>
+         <p>
+         <span x-text="index + ': '"></span>
+         <span x-text="memoObj.title"></span>
+         </p>
+         <template x-for="(line, index2) in memoObj.content.split('\n')">
+           <p x-text="line"></p>
+         </template>
+         <button @click="showModal(index)">編集</button>
+       </div>
+     </template>
+</div>
+
     
-    <div class='section1 min-h-80 flex flex-row text-left text-black md:flex items-center justify-center flex-grow p-16'>
-      <div class='font-bold text-3xl max-w-lg bg-gray-100 p-6 rounded shadow-xl max-w-4xl w-full flex flex-col justify-center'>
-        <div id='tabMenuContainerWrap'class='text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700 mb-4'>
-        </div>
-        <div class='text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700'>
-          <div id='editorTabContainer' class='hidden'>
-  <h5 class='block mb-2 text-sm text-center'>INTRODUCTION</h5>
+    <div x-data="modalData()" 
+     class='absolute'>
+<div x-show="$store.modal.isModalActive" id='modalBackground' data-id='modalClose' class='fixed bg-white bg-opacity-50 w-full h-full z-40 inset-0'></div>
+<div x-show="$store.modal.isModalActive" id='modalTemplate' data-id='modal' class='transition-opacity duration-500 fixed w-11/12 lg:w-5/12 h-full left-0 right-0 m-auto flex font-extrabold z-50'>
+  <section class='relative m-auto w-4/5 shadow-lg rounded-3xl shadow-2xl bg-white'>
+    <div class='p-8 text-left sm:p-12 flex flex-col'>
+         <label
+           for='modalTitleInput'
+           class='relative block rounded-md border border-gray-200 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600'
+           >
+           <input
+             type='text'
+             id='modalTitleInput'
+             class='peer border-none bg-transparent placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0 p-4'
+             placeholder='title'
+             x-model='$store.modal.title'
+             x-on:keyup.debounce.750ms='keyupAction($event)'
+             x-on:focus="keepModal($event)"
+             x-on:blur="closeModal($event)"
+             />
 
-  <div id='filePermissionRequestContainer' class='flex justify-center hidden'>
-    <button id='filePermissionRequestBtn' data-id='xloginLoginBtn' data-permission='rw:$CLIENT_ID:json_v1' class='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>XLogin</button>
-  </div>
-  <div id='editorContainer' class='hidden'>
-    <textarea id='messageContent' rows='4' class='block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-100 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-4' placeholder='hi everyone!'></textarea>
-    <div class='flex justify-between w-full'>
-      <button id='saveMessageBtn' class='w-60 px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out'>save introduction</button>
-      <button id='deleteMessageBtn' class='w-60 px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out'>delete introduction</button>
+           <span
+             class='pointer-events-none absolute start-2.5 top-0 -translate-y-1/2 bg-white p-0.5 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs'
+             >
+             title
+           </span>
+         </label>
+           <textarea
+             class='w-full rounded-lg border border-gray-200 p-3 text-sm'
+             placeholder='content'
+             rows='8'
+             id='modalContentInput'
+             x-model='$store.modal.content'
+             x-on:keyup.debounce.750ms='keyupAction($event)'
+             x-on:focus="keepModal($event)"
+             x-on:blur="closeModal($event)"
+             x-ref="memoContentInput"
+             ></textarea>
     </div>
-  </div>
+  </section>
 </div>
-
-
-          <div id='timerTabContainer' class='hidden'>
-  <button id='addTimerBtn' class='w-60 px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out'>start timer</button>
 </div>
+<script type="text/javascript">
 
-          <div id='backupEmailAddressFormTabContainer' class='hidden flex justify-center'>
-  <div id='backupEmailAddressPermissionRequestContainer' class='flex justify-center hidden'>
-    <button id='backupEmailAddressPermissionRequestBtn' data-id='xloginLoginBtn' data-permission='rw:auth:backupEmailAddress' class='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>XLogin</button>
-  </div>
-  <form id='backupEmailAddressForm' class='flex w-full hidden'>
-    <div class='flex w-full group flex-col'>
-      <label for='backupEmailAddressInput' class='text-sm text-gray-500 dark:text-gray-400'>Backup Email address</label>
-      <input id='backupEmailAddressInput' type='email' class='block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer' placeholder='' required />
-    </div>
-    <button type='submit' class='flex text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto p-4 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>Submit</button>
-  </form>
-</div>
+  document.addEventListener('alpine:init', () => {
+      const customShowModal = async (title, content) => {
+          Alpine.store('modal').title = title
+          Alpine.store('modal').content = content
+          await showModal()
+          document.querySelector('#modalContentInput').focus()
+        }
+      const customAction = () => {
+          Alpine.store('memo').saveMemoList()
+        }
 
+      const showModal = async () => {
+          Alpine.store('modal').isModalActive = true
+          await Alpine.nextTick()
+        }
+      Alpine.store('modal', {
+          isModalActive: false,
+          showModal,
 
-          <div id='uploadTabContainer' class='hidden'>
-  <div id='uploadFilePermissionRequestContainer' class='flex justify-center hidden'>
-    <button data-id='xloginLoginBtn' data-permission='rw:$CLIENT_ID:file_v1' class='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>XLogin</button>
-  </div>
+          title: '',
+          content: '', 
+          customShowModal,
+        }) 
 
-  <div id='uploadContainer' class='hidden max-w-md mx-auto bg-white p-6 rounded-lg shadow-md mb-4'>
-    <h2 class='text-xl font-semibold mb-4'>ファイルアップロード</h2>
-    <form id='uploadProfileForm' action='#'>
-      <div class='mb-4'>
-        <label for='file' class='block text-gray-700 font-medium'>ファイルを選択してください</label>
-        <input id='profileImageInput' type='file' name='file' id='file' class='mt-2'>
-      </div>
-      <button type='submit' class='bg-blue-500 text-white font-semibold px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600'>
-        アップロード
-      </button>
-    </form>
-  </div>
+      Alpine.data('modalData', () => {
+          return {
+              isKeep: false,
+              keyupActionTimer: null,
+              keyupAction(event) {
+                  clearTimeout(this.keyupActionTimer)
+                  this.keyupActionTimer = setTimeout(() => {
+                      this.customAction()
+                    }, 750)
+                },
+              closeModal(event) {
+                  console.log('closeModal start')
+                  this.isKeep = false
+                  setTimeout(function () {
+                      if (this.isKeep) {
+                          console.log('do nothing')
+                        } else {
+                            console.log('modal closed')
+                            Alpine.store('modal').isModalActive = false
+                            this.keyupAction()
+                          }
+                    }.bind(this), 100)
+                },
+              keepModal(event) {
+                  console.log('keep')
+                  this.isKeep = true
+                },
 
-  <div id='uploadedImgContainer' class='hidden max-w-md mx-auto flex justify-center items-center bg-gray-100'>
-    <div class='max-w-md bg-white p-8 rounded-lg shadow-md text-center'>
-      <img id='uploadedImg' src='#' class='w-32 h-32 rounded-full mx-auto mb-4'>
-      <p class='text-gray-700'>Uploaded Image</p>
-    </div>
-  </div>
+              customAction,
 
-</div>
+            }
+        })
+    })
+</script>
 
-        </div>
-        </div>
-      </div>
-    </div>
     <ul id='tabMenuContainerTemplate' class='hidden flex flex-wrap -mb-px flex-row justify-center'>
 </ul>
 

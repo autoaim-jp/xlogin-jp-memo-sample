@@ -14,9 +14,8 @@ export const showUserProfile = ({ userInfoResult, applyElmList }) => {
 /* request */
 export const getSaveMessage = ({ apiEndpoint, postRequest }) => {
   const url = `${apiEndpoint}/message/save`
-  return () => {
-    const messageContentElm = document.querySelector('#messageContent')
-    const param = { message: messageContentElm.value }
+  return ({ message }) => {
+    const param = { message }
     return postRequest(url, param)
   }
 }

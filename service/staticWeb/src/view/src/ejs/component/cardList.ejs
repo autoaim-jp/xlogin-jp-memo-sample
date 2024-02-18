@@ -1,0 +1,16 @@
+<div x-data="cardListData()"
+     x-init="loadMemoList()"
+     >
+     <template x-for="(memoObj, index) in $store.memo.memoList">
+       <div class='border'>
+         <p>
+         <span x-text="index + ': '"></span>
+         <span x-text="memoObj.title"></span>
+         </p>
+         <template x-for="(line, index2) in memoObj.content.split('\n')">
+           <p x-text="line"></p>
+         </template>
+         <button @click="showModal(index)">編集</button>
+       </div>
+     </template>
+</div>

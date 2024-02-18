@@ -18,25 +18,9 @@ asocial.lib = lib
 /* a is an alias of asocial */
 const a = asocial
 
-const showNotification = () => {
-  setInterval(() => {
-    a.lib.common.output.showNotification(a.setting.browserServerSetting.getValue('apiEndpoint'), a.lib.xdevkit.output.showModal, a.lib.common.input.getRequest)
-  }, 30 * 1000)
-}
-
-const loadMessageContent = async () => {
-  const messageResult = await a.input.fetchMessage(argNamed({
-    browserServerSetting: a.setting.browserServerSetting.getList('apiEndpoint'),
-    lib: [a.lib.common.input.getRequest],
-  }))
-
-  a.output.showMessage(argNamed({
-    param: { messageResult },
-  }))
-}
-
 const loadPermission = async () => {
   const splitPermissionListResult = await a.lib.common.input.fetchSplitPermissionList(a.setting.browserServerSetting.getValue('apiEndpoint'))
+  /*
   a.output.showEditor(argNamed({
     param: { splitPermissionListResult },
   }))
@@ -48,8 +32,59 @@ const loadPermission = async () => {
   a.output.showUploadForm(argNamed({
     param: { splitPermissionListResult },
   }))
+  */
 
   a.lib.xdevkit.output.reloadXloginLoginBtn(splitPermissionListResult?.result?.clientId)
+}
+
+const setupAlpine = () => {
+  const saveMessage = a.output.getSaveMessage(argNamed({
+    browserServerSetting: a.setting.browserServerSetting.getList('apiEndpoint'),
+    lib: [a.lib.common.output.postRequest],
+  }))
+
+  Alpine.store('memo', {
+    selectedIdx: -1,
+    memoList: [],
+
+    saveMemoList() {
+      const { title, content } = Alpine.store('modal')
+      Alpine.store('memo').memoList[Alpine.store('memo').selectedIdx].title = title
+      Alpine.store('memo').memoList[Alpine.store('memo').selectedIdx].content = content
+
+      const message = JSON.stringify(Alpine.store('memo').memoList)
+      saveMessage({ message })
+      console.log('memoList updated')
+    },
+  })
+
+  Alpine.data('cardListData', () => {
+    return {
+      async loadMemoList() {
+        /*
+        Alpine.store('memo').memoList = [
+          { title: 'その1', content: 'めもめも\nめも！' },
+          { title: 'その2', content: 'これはメモです。' },
+        ]
+        */
+
+        const messageResult = await a.input.fetchMessage(argNamed({
+          browserServerSetting: a.setting.browserServerSetting.getList('apiEndpoint'),
+          lib: [a.lib.common.input.getRequest],
+        }))
+
+        console.log({ messageResult })
+        const memoList = JSON.parse(messageResult?.result?.jsonContent || '[]')
+        Alpine.store('memo').memoList = memoList
+      },
+      showModal(memoIdx) {
+        Alpine.store('memo').selectedIdx = memoIdx
+        const { title, content } = Alpine.store('memo').memoList[memoIdx]
+
+        Alpine.store('modal').customShowModal(title, content)
+      },
+    }
+  })
 }
 
 const main = async () => {
@@ -58,10 +93,12 @@ const main = async () => {
   // a.lib.common.output.setOnClickNavManu()
   a.lib.monkeyPatch()
 
-//  a.app.loadMessageContent()
+  // a.app.loadMessageContent()
 
-  a.app.showNotification()
   a.app.loadPermission()
+
+  // a.app.setupAlpine()
+  window.setupAlpine = a.app.setupAlpine
 
   setTimeout(() => {
     a.lib.xdevkit.output.switchLoading(false)
@@ -70,9 +107,8 @@ const main = async () => {
 
 a.app = {
   main,
-  showNotification,
-  loadMessageContent,
   loadPermission,
+  setupAlpine,
 }
 
 a.app.main()

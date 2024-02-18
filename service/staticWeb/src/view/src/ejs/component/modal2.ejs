@@ -1,0 +1,102 @@
+<div x-data="modalData()" 
+     class='absolute'>
+<div x-show="$store.modal.isModalActive" id='modalBackground' data-id='modalClose' class='fixed bg-white bg-opacity-50 w-full h-full z-40 inset-0'></div>
+<div x-show="$store.modal.isModalActive" id='modalTemplate' data-id='modal' class='transition-opacity duration-500 fixed w-11/12 lg:w-5/12 h-full left-0 right-0 m-auto flex font-extrabold z-50'>
+  <section class='relative m-auto w-4/5 shadow-lg rounded-3xl shadow-2xl bg-white'>
+    <div class='p-8 text-left sm:p-12 flex flex-col'>
+         <label
+           for='modalTitleInput'
+           class='relative block rounded-md border border-gray-200 shadow-sm focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600'
+           >
+           <input
+             type='text'
+             id='modalTitleInput'
+             class='peer border-none bg-transparent placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0 p-4'
+             placeholder='title'
+             x-model='$store.modal.title'
+             x-on:keyup.debounce.750ms='keyupAction($event)'
+             x-on:focus="keepModal($event)"
+             x-on:blur="closeModal($event)"
+             />
+
+           <span
+             class='pointer-events-none absolute start-2.5 top-0 -translate-y-1/2 bg-white p-0.5 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs'
+             >
+             title
+           </span>
+         </label>
+           <textarea
+             class='w-full rounded-lg border border-gray-200 p-3 text-sm'
+             placeholder='content'
+             rows='8'
+             id='modalContentInput'
+             x-model='$store.modal.content'
+             x-on:keyup.debounce.750ms='keyupAction($event)'
+             x-on:focus="keepModal($event)"
+             x-on:blur="closeModal($event)"
+             x-ref="memoContentInput"
+             ></textarea>
+    </div>
+  </section>
+</div>
+</div>
+<script type="text/javascript">
+
+  document.addEventListener('alpine:init', () => {
+      const customShowModal = async (title, content) => {
+          Alpine.store('modal').title = title
+          Alpine.store('modal').content = content
+          await showModal()
+          document.querySelector('#modalContentInput').focus()
+        }
+      const customAction = () => {
+          Alpine.store('memo').saveMemoList()
+        }
+
+      const showModal = async () => {
+          Alpine.store('modal').isModalActive = true
+          await Alpine.nextTick()
+        }
+      Alpine.store('modal', {
+          isModalActive: false,
+          showModal,
+
+          title: '',
+          content: '', 
+          customShowModal,
+        }) 
+
+      Alpine.data('modalData', () => {
+          return {
+              isKeep: false,
+              keyupActionTimer: null,
+              keyupAction(event) {
+                  clearTimeout(this.keyupActionTimer)
+                  this.keyupActionTimer = setTimeout(() => {
+                      this.customAction()
+                    }, 750)
+                },
+              closeModal(event) {
+                  console.log('closeModal start')
+                  this.isKeep = false
+                  setTimeout(function () {
+                      if (this.isKeep) {
+                          console.log('do nothing')
+                        } else {
+                            console.log('modal closed')
+                            Alpine.store('modal').isModalActive = false
+                            this.keyupAction()
+                          }
+                    }.bind(this), 100)
+                },
+              keepModal(event) {
+                  console.log('keep')
+                  this.isKeep = true
+                },
+
+              customAction,
+
+            }
+        })
+    })
+</script>
