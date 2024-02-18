@@ -117,7 +117,7 @@ const handleInvalidSession = ({ req, res }) => {
 export default {
   init,
 
- handleMessageSave,
+  handleMessageSave,
   handleMessageContent,
   handleMessageDelete,
   handleSplitPermissionList,
