@@ -43,18 +43,32 @@ const setupAlpine = () => {
     lib: [a.lib.common.output.postRequest],
   }))
 
+  const updateMemoList = () => {
+    const message = JSON.stringify(Alpine.store('memo').memoList)
+    saveMessage({ message })
+    console.log('memoList updated')
+  }
+
+  const showModal = (memoIndex) => {
+    Alpine.store('memo').multiSelectIndexList = {}
+    Alpine.store('memo').editIndex = memoIndex
+    const { title, content } = Alpine.store('memo').memoList[memoIndex]
+
+    Alpine.store('modal').customShowModal(title, content)
+  }
+ 
+
   Alpine.store('memo', {
-    selectedIdx: -1,
+    editIndex: -1,
     memoList: [],
+    multiSelectIndexList: {},
 
     saveMemoList() {
       const { title, content } = Alpine.store('modal')
-      Alpine.store('memo').memoList[Alpine.store('memo').selectedIdx].title = title
-      Alpine.store('memo').memoList[Alpine.store('memo').selectedIdx].content = content
+      Alpine.store('memo').memoList[Alpine.store('memo').editIndex].title = title
+      Alpine.store('memo').memoList[Alpine.store('memo').editIndex].content = content
 
-      const message = JSON.stringify(Alpine.store('memo').memoList)
-      saveMessage({ message })
-      console.log('memoList updated')
+      updateMemoList()
     },
   })
 
@@ -77,11 +91,86 @@ const setupAlpine = () => {
         const memoList = JSON.parse(messageResult?.result?.jsonContent || '[]')
         Alpine.store('memo').memoList = memoList
       },
-      showModal(memoIdx) {
-        Alpine.store('memo').selectedIdx = memoIdx
-        const { title, content } = Alpine.store('memo').memoList[memoIdx]
+      toggleSelect(index) {
+        if (Alpine.store('memo').multiSelectIndexList[index]) {
+          delete Alpine.store('memo').multiSelectIndexList[index]
+        } else {
+          Alpine.store('memo').multiSelectIndexList[index] = true
+        }
+        console.log(Alpine.store('memo').multiSelectIndexList)
+      },
+      showModal,
+    }
+  })
 
-        Alpine.store('modal').customShowModal(title, content)
+
+  Alpine.data('sidemenuData', () => {
+    return {
+      deleteSelectedMemo() {
+        if (Object.keys(Alpine.store('memo').multiSelectIndexList).length === 0) {
+          return
+        }
+        Object.keys(Alpine.store('memo').multiSelectIndexList).forEach((index) => {
+          delete Alpine.store('memo').memoList[index]
+        })
+        const newMemoList = Alpine.store('memo').memoList.filter((memo) => { return memo })
+        Alpine.store('memo').memoList = newMemoList
+
+        updateMemoList() 
+      },
+      createNewMemo() {
+        Alpine.store('memo').memoList.push({ title: '', content: '' })
+        showModal(Alpine.store('memo').memoList.length - 1)
+      },
+      moveSelectedMemo(direction) {
+        if (Object.keys(Alpine.store('memo').multiSelectIndexList).length === 0 || Alpine.store('memo').memoList.length <= 1) {
+          return
+        }
+        let param = {}
+        if (direction === 'left') {
+          param = { edge: 0, shibling: 1, move: -1 }
+        } else {
+          param = { edge: Object.keys(Alpine.store('memo').memoList).length - 1, shibling: Object.keys(Alpine.store('memo').memoList).length - 2, move: +1 }
+        }
+        const currentMemoList = {}
+        Alpine.store('memo').memoList.forEach((memo, i) => {
+          currentMemoList[i] = memo
+        })
+        Object.keys(Alpine.store('memo').multiSelectIndexList).forEach((_selectedIndex) => {
+          const selectedIndex = parseInt(_selectedIndex)
+          if (selectedIndex === param.edge) {
+            return
+          }
+          if (selectedIndex === param.shibling && Alpine.store('memo').multiSelectIndexList[param.edge]) {
+            return
+          }
+          const prev = Alpine.store('memo').memoList[selectedIndex + param.move]
+          const current = Alpine.store('memo').memoList[selectedIndex]
+          Alpine.store('memo').memoList[selectedIndex + param.move] = current
+          Alpine.store('memo').memoList[selectedIndex] = prev
+        })
+
+
+        const newMultiSelectIndexList = {}
+        Object.keys(Alpine.store('memo').multiSelectIndexList).forEach((_selectedIndex) => {
+          const selectedIndex = parseInt(_selectedIndex)
+          if (selectedIndex === param.edge) {
+            if (Alpine.store('memo').multiSelectIndexList[param.shibling]) {
+              newMultiSelectIndexList[param.shibling] = true
+            } else {
+              newMultiSelectIndexList[param.edge] = true
+            }
+            return
+          }
+          if (selectedIndex === param.shibling && Alpine.store('memo').multiSelectIndexList[param.edge]) {
+            newMultiSelectIndexList[param.edge] = true
+            return
+          }
+          newMultiSelectIndexList[selectedIndex + param.move] = true
+        })
+
+        Alpine.store('memo').multiSelectIndexList = newMultiSelectIndexList
+        updateMemoList()
       },
     }
   })
