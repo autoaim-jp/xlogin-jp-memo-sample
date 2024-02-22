@@ -34,10 +34,11 @@ const loadPermission = async () => {
   }))
   */
 
+  // TODO alpine
   a.lib.xdevkit.output.reloadXloginLoginBtn(splitPermissionListResult?.result?.clientId)
 }
 
-const setupAlpine = () => {
+const setupAlpine = () => { 
   const saveMessage = a.output.getSaveMessage(argNamed({
     browserServerSetting: a.setting.browserServerSetting.getList('apiEndpoint'),
     lib: [a.lib.common.output.postRequest],
@@ -56,7 +57,21 @@ const setupAlpine = () => {
 
     Alpine.store('modal').customShowModal(title, content)
   }
- 
+
+  const loadPermissionList = async () => {
+    const splitPermissionListResult = await a.lib.common.input.fetchSplitPermissionList(a.setting.browserServerSetting.getValue('apiEndpoint'))
+    Alpine.store('permission').clientId = splitPermissionListResult?.result?.clientId || null
+    Alpine.store('permission').splitPermissionList = Object.assign({}, splitPermissionListResult?.result?.splitPermissionList || { optional: {}, required: {} })
+    Alpine.store('permission').isEnoughPermission = splitPermissionListResult?.result?.splitPermissionList?.optional[`rw:${splitPermissionListResult?.result?.clientId}:json_v1`]
+  }
+
+  Alpine.store('permission', {
+    clientId: null,
+    splitPermissionList: { optional: {}, required: {} },
+    isEnoughPermission: false,
+  })
+
+  loadPermissionList()
 
   Alpine.store('memo', {
     editIndex: -1,
@@ -74,6 +89,12 @@ const setupAlpine = () => {
 
   Alpine.data('cardListData', () => {
     return {
+      clientId: null,
+      splitPermissionList: { optional: {}, required: {} },
+      isEnoughPermission: false,
+      init() {
+        this.loadMemoList()
+      },
       async loadMemoList() {
         /*
         Alpine.store('memo').memoList = [
@@ -178,11 +199,7 @@ const setupAlpine = () => {
 
 const main = async () => {
   a.lib.xdevkit.output.switchLoading(true)
-  // TODO alpinejs
-  // a.lib.common.output.setOnClickNavManu()
   a.lib.monkeyPatch()
-
-  // a.app.loadMessageContent()
 
   a.app.loadPermission()
 

@@ -15,7 +15,6 @@ const a = asocial
 
 const main = async () => {
   a.lib.xdevkit.output.switchLoading(true)
-  a.lib.common.output.setOnClickNavManu()
   a.lib.monkeyPatch()
   a.app.loadXloginButton()
   setTimeout(() => {

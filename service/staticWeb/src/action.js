@@ -10,8 +10,11 @@ const getHandlerMessageSave = ({ handleMessageSave, createResponse }) => {
   }
 }
 
-const getHandlerMessageContent = ({ handleMessageContent, createResponse }) => {
+const getHandlerMessageContent = ({ handleInvalidSession, handleMessageContent, createResponse }) => {
   return async (req, res) => {
+    if (handleInvalidSession({ req, res })) {
+      return
+    }
     const { accessToken } = req.session.auth
     const { jsonPath } = req.query
 
