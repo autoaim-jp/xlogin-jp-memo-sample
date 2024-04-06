@@ -52,7 +52,7 @@ const _getActionRouter = () => {
   expressRouter.post(`${setting.browserServerSetting.getValue('apiEndpoint')}/message/save`, messageSaveHandler)
 
   const messageContentHandler = a.action.getHandlerMessageContent(argNamed({
-    core: [a.core.handleMessageContent, a.core.createResponse],
+    core: [a.core.handleInvalidSession, a.core.handleMessageContent, a.core.createResponse],
   }))
   expressRouter.get(`${setting.browserServerSetting.getValue('apiEndpoint')}/message/content`, messageContentHandler)
 

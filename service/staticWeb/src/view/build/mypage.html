@@ -30,66 +30,61 @@
 
   <body class='flex flex-col' x-data>
     <div x-init="setupAlpine()"></div>
-    <header class="bg-white">
-  <div class="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-    <div class="flex h-16 items-center justify-between pr-12">
-      <div class="flex-1 md:flex md:items-center md:gap-12">
-        <a class='font-bold text-2xl' href='/'>
-          <img class='inline-block align-text-top' src='/img/logo.webp' width='48px' height='48px'>
-          <div class='inline-block ml-2'>
-            <span>sample.xlogin.jp</span>
-            <br />
-            <span class='text-sm'>simple login client sample</span>
-          </div>
-        </a>
-      </div>
+        <nav 
+      class='w-full z-30 top-0 py-1'
+      x-data="{
+              isMenuClose: true,
+               toggleMenu(event) {
+               this.isMenuClose = !this.isMenuClose
+               }
+      }"
+      >
+      <div class='max-w-3xl container mx-auto flex flex-wrap items-center justify-between mt-0 px-2 py-2'>
 
-      <div class="md:flex md:items-center md:gap-12">
-        <nav aria-label="Global" class="hidden md:block">
-          <ul class="flex items-center gap-6 text-sm">
-            <li class='xl:m-0 mr-3 mt-2 w-full border-b-2 border-white'><a data-id='notificationBtn' class='inline-block py-2 px-4 font-bold no-underline' href='#'>Notification</a></li>
-            <li class='xl:m-0 mr-3 mt-2 w-full border-b-2 border-white'><a class='inline-block py-2 px-4 font-bold no-underline' href='https://github.com/autoaim-jp/xlogin-jp-client-sample' target='_blank'>GitHub</a></li>
-          </ul>
-        </nav>
+        <div class='pl-4 flex items-center'>
+          <a class='font-bold text-2xl' href='/'>
+            <img class='inline-block align-text-top' src='/img/logo.webp' width='48px' height='48px'>
+            <div class='inline-block ml-2'>
+              <span>sample.xlogin.jp</span>
+              <br />
+              <span class='text-sm'>simple login client sample</span>
+            </div>
+          </a>
+        </div>
 
-        <div class="flex items-center gap-4">
-          <div class="sm:flex sm:gap-4">
-            <a
-              class="rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white shadow"
-              href="/"
-              >
-              Login
-            </a>
+        <div class="block xl:hidden">
+          <button 
+             class="rounded bg-gray-100 text-gray-600 p-2 transition hover:text-gray-600/75"
+             @click="toggleMenu($event)"
+             >
+             <svg
+               xmlns="http://www.w3.org/2000/svg"
+               class="h-10 w-10"
+               fill="none"
+               viewBox="0 0 24 24"
+               stroke="currentColor"
+               stroke-width="2"
+               >
+               <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+             </svg>
+          </button>
+        </div>
 
-              <div class="hidden sm:flex">
-                <a
-                  class="rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium text-teal-600"
-                  href="/"
-                  >
-                  Register
-                </a>
-              </div>
-          </div>
-
-          <div class="block md:hidden">
-            <button class="rounded bg-gray-100 p-2 text-gray-600 transition hover:text-gray-600/75">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2"
-                >
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
+        <div class='xl:relative w-full left-0 xl:top-auto top-24 flex items-center grid xl:w-auto h-full fixed z-10'>
+          <div 
+             class='xl:flex xl:items-center xl:w-auto xl:block mt-2 xl:mt-0 p-1 xl:p-0 z-20 bg-gray-100 border-2 xl:bg-transparent xl:border-0 rounded h-full'
+             :class="{ 'hidden': isMenuClose }"
+            >
+            <ul class='lg:flex justify-end flex-1 xl:flex-row flex-col items-center text-center text-xl'>
+              <li class='xl:m-0 mr-3 mt-2 w-full border-b-2 border-white'><a data-id='notificationBtn' class='inline-block py-2 px-4 font-bold no-underline' href='#'>Notification</a></li>
+              <li class='xl:m-0 mr-3 mt-2 w-full border-b-2 border-white'><a class='inline-block py-2 px-4 font-bold no-underline' href='https://github.com/autoaim-jp/xlogin-jp-client-sample' target='_blank'>GitHub</a></li>
+            </ul>
           </div>
         </div>
+
       </div>
-    </div>
-  </div>
-</header>
+    </nav>
+
 
     <!-- https://tailwindcomponents.com/component/simple-notification -->
 <div id='notificationContainer' class='z-50 mt-20 p-4 absolute right-0 top-0 flex-col'>
@@ -134,43 +129,19 @@
 </div>
 
 
-    <div class='section1 min-h-80 flex flex-col text-left text-black md:flex items-center justify-center flex-grow p-16'>
-      <div class='font-bold text-3xl max-w-lg bg-gray-100 p-6 rounded shadow-xl max-w-4xl w-full'>
-        <h2 class='text-center mb-2'>MY PAGE</h2>
-        <!-- MIT License https://tailwind-elements.com/docs/standard/components/cards/ -->
-<div class='flex justify-center'>
-  <div class='flex flex-col md:flex-row md:max-w-xl rounded-lg bg-white shadow-lg items-center'>
-    <img class='m-4 w-36 h-36 md:mt-0 md:h-auto object-cover md:w-48 rounded-lg' src='/img/profile.png' alt='profile img' />
-    <div class='p-6 flex flex-col justify-start break-all'>
-      <h5 class='text-gray-900 text-xl font-medium mb-2 text-center'>Profile</h5>
-      <p class='text-gray-700 text-base mb-4'>ユーザー名: <span data-var='auth:userName'>取得できません</span></p>
-      <p class='text-gray-700 text-base mb-4'>メールアドレス: <span data-var='auth:emailAddress'>取得できません</span></p>
-      <p class='text-gray-600 text-xs'>サービスユーザーID(sample_localhost): <span data-var='sample_localhost:serviceUserId'>取得できません</span></p>
-      <p class='text-gray-600 text-xs'>サービスユーザーID(sample_xlogin_jp): <span data-var='sample_xlogin_jp:serviceUserId'>取得できません</span></p>
-    </div>
-  </div>
-</div>
 
-
-      </div>
-    </div><!-- section1 -->
-        <div class='flex h-screen w-16 flex-col justify-between border-e bg-white fixed right-0'>
+        <div 
+      class='flex h-screen w-16 flex-col justify-between border-e bg-white fixed right-0 mt-14'
+      x-data="sidemenuData()"
+      >
       <div>
-        <div class='inline-flex h-16 w-16 items-center justify-center'>
-          <span
-            class='grid h-10 w-10 place-content-center rounded-lg bg-gray-100 text-xs text-gray-600'
-            >
-            L
-          </span>
-        </div>
-
         <div class='border-t border-gray-100'>
           <div class='px-2'>
             <div class='py-4'>
               <a
                 href='#'
                 class='t group relative flex justify-center rounded bg-blue-50 px-2 py-1.5 text-blue-700'
-                x-on:click.prevent="alert('Hello World!')"
+                x-on:click.prevent="createNewMemo()"
                 >
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <rect x="0" fill="none" width="24" height="24"></rect> <g> <path d="M21 14v5c0 1.105-.895 2-2 2H5c-1.105 0-2-.895-2-2V5c0-1.105.895-2 2-2h5v2H5v14h14v-5h2z"></path> <path d="M21 7h-4V3h-2v4h-4v2h4v4h2V9h4"></path> </g> </g></svg>
 
@@ -185,8 +156,10 @@
             <ul class='space-y-1 border-t border-gray-100 py-4'>
               <li>
                 <a
-                  href=''
-                  class='group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+                  href='#'
+                  class='group relative flex justify-center rounded px-2 py-1.5'
+                  @click.prevent.stop="moveSelectedMemo('left')"
+                  :class="{ 'bg-gray-500 hover:bg-gray-500': Object.keys($store.memo.multiSelectIndexList).length === 0, 'text-gray-500 hover:bg-gray-50 hover:text-gray-700': Object.keys($store.memo.multiSelectIndexList).length !== 0 }"
                   >
 <svg viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M768 903.232l-50.432 56.768L256 512l461.568-448 50.432 56.768L364.928 512z" fill="#000000"></path></g></svg>
                   <span
@@ -199,8 +172,10 @@
 
               <li>
                 <a
-                  href=''
-                  class='group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+                  href='#'
+                  class='group relative flex justify-center rounded px-2 py-1.5'
+                  @click.prevent.stop="moveSelectedMemo('right')"
+                  :class="{ 'bg-gray-500 hover:bg-gray-500': Object.keys($store.memo.multiSelectIndexList).length === 0, 'text-gray-500 hover:bg-gray-50 hover:text-gray-700': Object.keys($store.memo.multiSelectIndexList).length !== 0 }"
                   >
 <svg viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M256 120.768L306.432 64 768 512l-461.568 448L256 903.232 659.072 512z" fill="#000000"></path></g></svg>
                   <span
@@ -213,8 +188,10 @@
 
               <li>
                 <a
-                  href=''
-                  class='group relative flex justify-center rounded px-2 py-1.5 text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+                  href='#'
+                  class='group relative flex justify-center rounded px-2 py-1.5'
+                  @click.prevent.stop="deleteSelectedMemo()"
+                  :class="{ 'bg-gray-500 hover:bg-gray-500': Object.keys($store.memo.multiSelectIndexList).length === 0, 'text-gray-500 hover:bg-gray-50 hover:text-gray-700': Object.keys($store.memo.multiSelectIndexList).length !== 0 }"
                   >
 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M20 14V7C20 5.34315 18.6569 4 17 4H12M20 14L13.5 20M20 14H15.5C14.3954 14 13.5 14.8954 13.5 16V20M13.5 20H7C5.34315 20 4 18.6569 4 17V12" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M4 4L6.5 6.5M9 9L6.5 6.5M6.5 6.5L9 4M6.5 6.5L4 9" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
                   <span
@@ -227,77 +204,70 @@
 
             </ul>
 
-            <div class='py-4'>
-              <a
-                href=''
-                class='t group relative flex justify-center rounded bg-blue-50 px-2 py-1.5 text-blue-700'
-                >
-                  <svg viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M448 768A320 320 0 1 0 448 128a320 320 0 0 0 0 640z m297.344-76.992l214.592 214.592-54.336 54.336-214.592-214.592a384 384 0 1 1 54.336-54.336z" fill="#000000"></path></g></svg>
-
-                  <span
-                    class='absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible'
-                    >
-                    Search
-                  </span>
-              </a>
-            </div>
-
-
           </div>
         </div>
       </div>
 
-      <div class='sticky inset-x-0 bottom-0 border-t border-gray-100 bg-white p-2'>
-        <form action='/logout'>
-          <button
-            type='submit'
-            class='group relative flex w-full justify-center rounded-lg px-2 py-1.5 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700'
-            >
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              class='h-5 w-5 opacity-75'
-              fill='none'
-              viewBox='0 0 24 24'
-              stroke='currentColor'
-              stroke-width='2'
-              >
-              <path
-                stroke-linecap='round'
-                stroke-linejoin='round'
-                d='M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1'
-                />
-            </svg>
-
-              <span
-                class='absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white invisible group-hover:visible'
-                >
-                Logout
-              </span>
-          </button>
-        </form>
-      </div>
     </div>
 
 
 
-    <div x-data="cardListData()"
-     x-init="loadMemoList()"
-     >
-     <template x-for="(memoObj, index) in $store.memo.memoList">
-       <div class='border'>
-         <p>
-         <span x-text="index + ': '"></span>
-         <span x-text="memoObj.title"></span>
-         </p>
-         <template x-for="(line, index2) in memoObj.content.split('\n')">
-           <p x-text="line"></p>
-         </template>
-         <button @click="showModal(index)">編集</button>
-       </div>
-     </template>
+    <div class='section1 min-h-80 flex flex-col text-left text-black md:flex items-center justify-center flex-grow p-16'>
+  <div x-data="cardListData()"
+       x-init="init()"
+       class='flex flex-wrap w-full'
+       >
+<div
+       class='flex flex-wrap w-full'
+       x-show.important="!$store.permission.isEnoughPermission"
+       x-transition
+      >
+      <button 
+       class='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+       x-data="{
+               permission: 'rw:$CLIENT_ID:json_v1',
+                }"
+       @click="window.location.href = '/f/xlogin/connect?redirectAfterAuth=/mypage&requestScope='+ permission.replace(/\$CLIENT_ID/g, $store.permission.clientId)"
+        >
+        XLogin
+      </button>
+</div>
+       <div
+       class='flex flex-wrap w-full'
+       x-show.important="$store.permission.isEnoughPermission"
+       x-transition
+      >
+       <template x-for="(memoObj, index) in $store.memo.memoList">
+         <div class='p-8 w-1/4'>
+           <div class='border-2 border-indigo-200 p-4 rounded-xl hover:bg-gray-100' @click="toggleSelect(index)" :class="{ 'border-indigo-500': $store.memo.multiSelectIndexList[index] }">
+             <p>
+               <span x-text="index + ': '"></span>
+               <span x-text="memoObj.title"></span>
+             </p>
+             <template x-for="(line, index2) in memoObj.content.split('\n')">
+               <p x-text="line"></p>
+             </template>
+
+             <a
+               class="inline-flex items-center gap-2 rounded border border-indigo-600 px-2 py-1 text-indigo-600 hover:bg-indigo-600 hover:text-white focus:outline-none focus:ring active:bg-indigo-500"
+
+               href="#"
+               @click.prevent.stop="showModal(index)"
+               >
+               <span class="text-sm font-medium nowrap">編集</span>
+
+               <svg
+                 class="size-5 rtl:rotate-180"
+                 <svg viewBox="0 -0.5 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M17.7 5.12758L19.266 6.37458C19.4172 6.51691 19.5025 6.71571 19.5013 6.92339C19.5002 7.13106 19.4128 7.32892 19.26 7.46958L18.07 8.89358L14.021 13.7226C13.9501 13.8037 13.8558 13.8607 13.751 13.8856L11.651 14.3616C11.3755 14.3754 11.1356 14.1751 11.1 13.9016V11.7436C11.1071 11.6395 11.149 11.5409 11.219 11.4636L15.193 6.97058L16.557 5.34158C16.8268 4.98786 17.3204 4.89545 17.7 5.12758Z" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M12.033 7.61865C12.4472 7.61865 12.783 7.28287 12.783 6.86865C12.783 6.45444 12.4472 6.11865 12.033 6.11865V7.61865ZM9.23301 6.86865V6.11865L9.23121 6.11865L9.23301 6.86865ZM5.50001 10.6187H6.25001L6.25001 10.617L5.50001 10.6187ZM5.50001 16.2437L6.25001 16.2453V16.2437H5.50001ZM9.23301 19.9937L9.23121 20.7437H9.23301V19.9937ZM14.833 19.9937V20.7437L14.8348 20.7437L14.833 19.9937ZM18.566 16.2437H17.816L17.816 16.2453L18.566 16.2437ZM19.316 12.4937C19.316 12.0794 18.9802 11.7437 18.566 11.7437C18.1518 11.7437 17.816 12.0794 17.816 12.4937H19.316ZM15.8863 6.68446C15.7282 6.30159 15.2897 6.11934 14.9068 6.2774C14.5239 6.43546 14.3417 6.87397 14.4998 7.25684L15.8863 6.68446ZM18.2319 9.62197C18.6363 9.53257 18.8917 9.13222 18.8023 8.72777C18.7129 8.32332 18.3126 8.06792 17.9081 8.15733L18.2319 9.62197ZM8.30001 16.4317C7.8858 16.4317 7.55001 16.7674 7.55001 17.1817C7.55001 17.5959 7.8858 17.9317 8.30001 17.9317V16.4317ZM15.767 17.9317C16.1812 17.9317 16.517 17.5959 16.517 17.1817C16.517 16.7674 16.1812 16.4317 15.767 16.4317V17.9317ZM12.033 6.11865H9.23301V7.61865H12.033V6.11865ZM9.23121 6.11865C6.75081 6.12461 4.7447 8.13986 4.75001 10.6203L6.25001 10.617C6.24647 8.96492 7.58269 7.62262 9.23481 7.61865L9.23121 6.11865ZM4.75001 10.6187V16.2437H6.25001V10.6187H4.75001ZM4.75001 16.242C4.7447 18.7224 6.75081 20.7377 9.23121 20.7437L9.23481 19.2437C7.58269 19.2397 6.24647 17.8974 6.25001 16.2453L4.75001 16.242ZM9.23301 20.7437H14.833V19.2437H9.23301V20.7437ZM14.8348 20.7437C17.3152 20.7377 19.3213 18.7224 19.316 16.242L17.816 16.2453C17.8195 17.8974 16.4833 19.2397 14.8312 19.2437L14.8348 20.7437ZM19.316 16.2437V12.4937H17.816V16.2437H19.316ZM14.4998 7.25684C14.6947 7.72897 15.0923 8.39815 15.6866 8.91521C16.2944 9.44412 17.1679 9.85718 18.2319 9.62197L17.9081 8.15733C17.4431 8.26012 17.0391 8.10369 16.6712 7.7836C16.2897 7.45165 16.0134 6.99233 15.8863 6.68446L14.4998 7.25684ZM8.30001 17.9317H15.767V16.4317H8.30001V17.9317Z" fill="#000000"></path> </g></svg>
+             </a>
+           </div>
+         </div>
+       </template>
+  </div>
+  </div>
 </div>
 
-    
+
     <div x-data="modalData()" 
      class='absolute'>
 <div x-show="$store.modal.isModalActive" id='modalBackground' data-id='modalClose' class='fixed bg-white bg-opacity-50 w-full h-full z-40 inset-0'></div>
@@ -347,7 +317,11 @@
           Alpine.store('modal').title = title
           Alpine.store('modal').content = content
           await showModal()
-          document.querySelector('#modalContentInput').focus()
+          if (title === '') {
+            document.querySelector('#modalTitleInput').focus()
+          } else {
+            document.querySelector('#modalContentInput').focus()
+          }
         }
       const customAction = () => {
           Alpine.store('memo').saveMemoList()
@@ -372,9 +346,13 @@
               keyupActionTimer: null,
               keyupAction(event) {
                   clearTimeout(this.keyupActionTimer)
-                  this.keyupActionTimer = setTimeout(() => {
+                  if (event && event.key === 'Escape') {
+                    this.closeModal(event)
+                  } else {
+                    this.keyupActionTimer = setTimeout(() => {
                       this.customAction()
                     }, 750)
+                  }
                 },
               closeModal(event) {
                   console.log('closeModal start')
@@ -432,7 +410,7 @@
 </div>
 
 
-    <div id='hiddenForTailwindByJs' class='hidden w-full h-96 p-1'></div>
+    <div id='hiddenForTailwindByJs' class='hidden w-full h-96 p-1 bg-gray-500 rounded-xl bg-gray-100 w-1/4 flex-wrap'></div>
   </body>
       
       

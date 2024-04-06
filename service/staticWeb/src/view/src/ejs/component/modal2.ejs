@@ -47,7 +47,11 @@
           Alpine.store('modal').title = title
           Alpine.store('modal').content = content
           await showModal()
-          document.querySelector('#modalContentInput').focus()
+          if (title === '') {
+            document.querySelector('#modalTitleInput').focus()
+          } else {
+            document.querySelector('#modalContentInput').focus()
+          }
         }
       const customAction = () => {
           Alpine.store('memo').saveMemoList()
@@ -72,9 +76,13 @@
               keyupActionTimer: null,
               keyupAction(event) {
                   clearTimeout(this.keyupActionTimer)
-                  this.keyupActionTimer = setTimeout(() => {
+                  if (event && event.key === 'Escape') {
+                    this.closeModal(event)
+                  } else {
+                    this.keyupActionTimer = setTimeout(() => {
                       this.customAction()
                     }, 750)
+                  }
                 },
               closeModal(event) {
                   console.log('closeModal start')
