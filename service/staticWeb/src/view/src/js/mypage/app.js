@@ -38,7 +38,7 @@ const loadPermission = async () => {
   a.lib.xdevkit.output.reloadXloginLoginBtn(splitPermissionListResult?.result?.clientId)
 }
 
-const setupAlpine = () => { 
+const setupAlpine = () => {
   const saveMessage = a.output.getSaveMessage(argNamed({
     browserServerSetting: a.setting.browserServerSetting.getList('apiEndpoint'),
     lib: [a.lib.common.output.postRequest],
@@ -61,7 +61,7 @@ const setupAlpine = () => {
   const loadPermissionList = async () => {
     const splitPermissionListResult = await a.lib.common.input.fetchSplitPermissionList(a.setting.browserServerSetting.getValue('apiEndpoint'))
     Alpine.store('permission').clientId = splitPermissionListResult?.result?.clientId || null
-    Alpine.store('permission').splitPermissionList = Object.assign({}, splitPermissionListResult?.result?.splitPermissionList || { optional: {}, required: {} })
+    Alpine.store('permission').splitPermissionList = { ...splitPermissionListResult?.result?.splitPermissionList || { optional: {}, required: {} } }
     Alpine.store('permission').isEnoughPermission = splitPermissionListResult?.result?.splitPermissionList?.optional[`rw:${splitPermissionListResult?.result?.clientId}:json_v1`]
   }
 
@@ -137,7 +137,7 @@ const setupAlpine = () => {
         const newMemoList = Alpine.store('memo').memoList.filter((memo) => { return memo })
         Alpine.store('memo').memoList = newMemoList
 
-        updateMemoList() 
+        updateMemoList()
       },
       createNewMemo() {
         Alpine.store('memo').memoList.push({ title: '', content: '' })
@@ -158,7 +158,7 @@ const setupAlpine = () => {
           currentMemoList[i] = memo
         })
         Object.keys(Alpine.store('memo').multiSelectIndexList).forEach((_selectedIndex) => {
-          const selectedIndex = parseInt(_selectedIndex)
+          const selectedIndex = parseInt(_selectedIndex, 10)
           if (selectedIndex === param.edge) {
             return
           }
@@ -174,7 +174,7 @@ const setupAlpine = () => {
 
         const newMultiSelectIndexList = {}
         Object.keys(Alpine.store('memo').multiSelectIndexList).forEach((_selectedIndex) => {
-          const selectedIndex = parseInt(_selectedIndex)
+          const selectedIndex = parseInt(_selectedIndex, 10)
           if (selectedIndex === param.edge) {
             if (Alpine.store('memo').multiSelectIndexList[param.shibling]) {
               newMultiSelectIndexList[param.shibling] = true
